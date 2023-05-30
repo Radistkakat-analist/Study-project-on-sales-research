@@ -72,10 +72,12 @@ union all
 from customers
 	where age >40;
 
-select
+select 
 	to_char(sale_date, 'YYYY-MM') as date,
 	count(distinct customer_id) as total_customers,
-	sum(quantity) as income
+	sum(quantity*price) as income
 from sales
+	join products
+on sales.product_id = products.product_id
 	group by 1
 	order by 1;
