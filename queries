@@ -13,21 +13,20 @@ group by name
 order by income desc
 limit 10;
 
-
 select 
 	concat(first_name,' ', last_name) as name,
-	floor(avg(quantity)) as average_income
+	round(avg(quantity),0) as average_income
 from employees
 	join sales
 on employees.employee_id = sales.sales_person_id
 	group by name
-having floor(avg(quantity)) < (select avg(quantity) from sales)
+having round(avg(quantity),0) < (select avg(quantity) from sales)
 	order by 2;
 	
 select 
 	concat(first_name,' ', last_name) as name,
 	to_char(sale_date, 'Day') as weekday,
-	floor(sum(quantity)) as income
+	sum(quantity) as income
 from employees
 	join sales
 on employees.employee_id = sales.sales_person_id
