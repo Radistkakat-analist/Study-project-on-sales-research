@@ -1,0 +1,35 @@
+select 
+	COUNT (customer_id) as customers_count
+from customers;
+
+select 
+	concat(first_name,' ', last_name) as name,
+	count(sales_id) as operations,
+	sum(quantity) as income
+from employees
+	join sales
+on employees.employee_id = sales.sales_person_id
+group by name
+order by income desc
+limit 10;
+
+
+select 
+	concat(first_name,' ', last_name) as name,
+	floor(avg(quantity)) as average_income
+from employees
+	join sales
+on employees.employee_id = sales.sales_person_id
+	group by name
+having floor(avg(quantity)) < (select avg(quantity) from sales)
+	order by 2;
+	
+select 
+	concat(first_name,' ', last_name) as name,
+	to_char(sale_date, 'Day') as weekday,
+	floor(sum(quantity)) as income
+from employees
+	join sales
+on employees.employee_id = sales.sales_person_id
+	group by 1,2
+	order by 1,2;
