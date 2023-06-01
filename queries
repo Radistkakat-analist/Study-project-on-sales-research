@@ -11,7 +11,7 @@ from sales
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by 1
+	group by name
 	order by income desc
 limit 10;
 
@@ -23,26 +23,30 @@ from sales
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by 1
+	group by name
 having round(avg(quantity*price),0) < (
 	select avg(quantity*price) 
 	from sales 
 	join products
 	on sales.product_id = products.product_id
 	)
-	order by 2;
+	order by average_income;
 
+with tab as (
 select 
 	concat(first_name,' ', last_name) as name,
 	to_char(sale_date, 'Day') as weekday,
-	round(sum(quantity*price),0) as income
+	round(sum(quantity*price),0) as income,
+	extract(isodow from sale_date) as isodow
 from sales
 	join employees
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by 1,2
-	order by 1,2;
+	group by name, weekday, isodow
+	order by name,isodow)
+select name, weekday, income
+	from tab;
 
 
 
@@ -79,5 +83,27 @@ select
 from sales
 	join products
 on sales.product_id = products.product_id
-	group by 1
-	order by 1;
+	group by date
+	order by date;
+
+	with tab as
+	(
+select
+	distinct on(sales.product_id) sales.product_id,
+	(concat(customers.first_name,' ',customers.last_name)) customer, 
+	sale_date,  
+	(concat(employees.first_name,' ',employees.last_name)) seller
+	from sales
+	join employees
+on employees.employee_id = sales.sales_person_id
+	join products
+on sales.product_id = products.product_id
+	join customers
+on sales.customer_id = customers.customer_id
+where price = 0
+	order by sales.product_id, sale_date 
+	)
+	select customer, 
+	sale_date,  
+	seller
+from tab;
