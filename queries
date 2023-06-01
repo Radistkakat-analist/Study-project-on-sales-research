@@ -89,7 +89,7 @@ on sales.product_id = products.product_id
 	with tab as
 	(
 select
-	distinct on(sales.product_id) sales.product_id,
+	distinct on(sales.customer_id) sales.customer_id,
 	(concat(customers.first_name,' ',customers.last_name)) customer, 
 	sale_date,  
 	(concat(employees.first_name,' ',employees.last_name)) seller
@@ -101,7 +101,7 @@ on sales.product_id = products.product_id
 	join customers
 on sales.customer_id = customers.customer_id
 where price = 0
-	order by sales.product_id, sale_date 
+	order by sales.customer_id, sale_date 
 	)
 	select customer, 
 	sale_date,  
