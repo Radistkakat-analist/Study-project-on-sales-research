@@ -1,7 +1,11 @@
+
+--customers_count
 select 
 	COUNT (customer_id) as customers_count
 from customers;
 
+
+--top_10_total_income
 select 
 	concat(first_name,' ', last_name) as name,
 	count(sales_id) as operations,
@@ -15,6 +19,7 @@ on sales.product_id = products.product_id
 	order by income desc
 limit 10;
 
+--lowest_average_income
 select 
 	concat(first_name,' ', last_name) as name,
 	round(avg(quantity*price),0) as average_income
@@ -24,7 +29,8 @@ on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
 	group by name
-having round(avg(quantity*price),0) < (
+having round(avg(quantity*price),0) < 
+	(
 	select avg(quantity*price) 
 	from sales 
 	join products
@@ -32,10 +38,13 @@ having round(avg(quantity*price),0) < (
 	)
 	order by average_income;
 
-with tab as (
+
+--day_of_the_week_income
+with tab as
+	 (
 select 
 	concat(first_name,' ', last_name) as name,
-	to_char(sale_date, 'Day') as weekday,
+	to_char(sale_date, 'day') as weekday,
 	round(sum(quantity*price),0) as income,
 	extract(isodow from sale_date) as isodow
 from sales
@@ -44,42 +53,45 @@ on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
 	group by name, weekday, isodow
-	order by name,isodow)
-select name, weekday, income
-	from tab;
+	order by isodow, name
+	)
+select 
+	name, 
+	weekday, 
+	income
+from tab;
 
 
-
-select '10-15' as age_category,
+--age_groups
+select 
+	'10-15' as age_category,
 	COUNT(*) as count
 from customers
 	where (age between 10 and 15)
 	group by age_category
-	
 union all 
-
-	select '16-25' as age_category,
-	COUNT(*) as count
+	select 
+		'16-25' as age_category,
+		COUNT(*) as count
 from customers
 	where age between 16 and 25
 	group by age_category
-	
 union all 
-
-	select '26-40' as age_category,
-	COUNT(*) as count
+	select 
+		'26-40' as age_category,
+		COUNT(*) as count
 from customers
 	where age between 26 and 40
-	group by age_category
-	
+	group by age_category	
 union all 
-
-	select '40+' as age_category,
-	COUNT(*) as count
+	select 
+		'40+' as age_category,
+		COUNT(*) as count
 from customers
 	where age >40
-group by age_category;
+	group by age_category;
 
+--customers_by_month
 select 
 	to_char(sale_date, 'YYYY-MM') as date,
 	count(distinct customer_id) as total_customers,
@@ -90,6 +102,8 @@ on sales.product_id = products.product_id
 	group by date
 	order by date;
 
+
+--special_offer
 	with tab as
 	(
 select
@@ -97,17 +111,18 @@ select
 	(concat(customers.first_name,' ',customers.last_name)) customer, 
 	sale_date,  
 	(concat(employees.first_name,' ',employees.last_name)) seller
-	from sales
+from sales
 	join employees
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
 	join customers
 on sales.customer_id = customers.customer_id
-where price = 0
+	where price = 0
 	order by sales.customer_id, sale_date 
 	)
-	select customer, 
+select 
+	customer, 
 	sale_date,  
 	seller
 from tab;
