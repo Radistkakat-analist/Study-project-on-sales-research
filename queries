@@ -15,8 +15,8 @@ from sales
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by name
-	order by income desc
+	group by 1
+	order by 3 desc
 limit 10;
 
 --lowest_average_income
@@ -28,7 +28,7 @@ from sales
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by name
+	group by 1
 having round(avg(quantity*price),0) < 
 	(
 	select avg(quantity*price) 
@@ -36,7 +36,7 @@ having round(avg(quantity*price),0) <
 	join products
 	on sales.product_id = products.product_id
 	)
-	order by average_income;
+	order by 2;
 
 
 --day_of_the_week_income
@@ -52,8 +52,8 @@ from sales
 on employees.employee_id = sales.sales_person_id
 	join products
 on sales.product_id = products.product_id
-	group by name, weekday, isodow
-	order by isodow, name
+	group by 1, 2, 4
+	order by 4, 1
 	)
 select 
 	name, 
@@ -99,8 +99,8 @@ select
 from sales
 	join products
 on sales.product_id = products.product_id
-	group by date
-	order by date;
+	group by 1
+	order by 1;
 
 
 --special_offer
