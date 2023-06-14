@@ -67,29 +67,29 @@ select
 	'10-15' as age_category,
 	COUNT(*) as count
 from customers
-	where (age between 10 and 15)
-	group by age_category
-union all 
-	select 
+where (age between 10 and 15)
+group by age_category
+	union all 
+select 
 		'16-25' as age_category,
 		COUNT(*) as count
 from customers
-	where age between 16 and 25
-	group by age_category
-union all 
-	select 
+where age between 16 and 25
+group by age_category
+	union all 
+select 
 		'26-40' as age_category,
 		COUNT(*) as count
 from customers
-	where age between 26 and 40
-	group by age_category	
-union all 
-	select 
+where age between 26 and 40
+group by age_category	
+	union all 
+select 
 		'40+' as age_category,
 		COUNT(*) as count
 from customers
-	where age >40
-	group by age_category;
+where age >40
+group by age_category;
 
 --customers_by_month
 select 
